@@ -8,7 +8,7 @@ from discord.ext import commands
 from config import settings
 from legenddb import LegendDB
 
-enviro = "LIVE"
+enviro = "dev"
 
 if enviro == "LIVE":
     token = settings['discord']['legendToken']
@@ -31,6 +31,7 @@ bot = commands.Bot(command_prefix=prefix,
                    description=description,
                    case_insensitive=True)
 
+
 @bot.event
 async def on_ready():
     logger.info("-------")
@@ -39,12 +40,14 @@ async def on_ready():
     bot.test_channel = bot.get_channel(settings['oakChannels']['testChat'])
     await bot.test_channel.send("Legend Bot has restarted")
 
+
 @bot.event
 async def on_resumed():
     logger.info("Bot has been resumed.")
 
-initial_extensions = ["cogs.general",
-                      "cogs.newhelp",
+initial_extensions = ["cogs.newhelp",
+                      "cogs.owner",
+                      "cogs.pull",
                       ]
 
 if __name__ == "__main__":
@@ -52,9 +55,9 @@ if __name__ == "__main__":
     bot.repo = git.Repo(os.getcwd())
     bot.db = LegendDB(bot)
     loop = asyncio.get_event_loop()
-    bot.loop = loop
     pool = loop.run_until_complete(bot.db.create_pool())
-    bot.pool = pool
+    bot.loop = loop
+    bot.db.pool = pool
     bot.logger = logger
     bot.coc_client = coc.login(settings['supercell']['user'],
                                settings['supercell']['pass'],

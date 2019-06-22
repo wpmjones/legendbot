@@ -1,6 +1,7 @@
 import asyncpg
 from config import settings
 
+
 class LegendDB:
     def __init__(self, bot):
         self.bot = bot
